@@ -1,0 +1,27 @@
+package app;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+
+public class prueba {
+	public static void main(String args[]) throws IOException {
+		File archivo = new File("C:\\Users\\NOX\\Desktop\\Progamacion\\Whatsapp\\app\\chat.txt");
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), StandardCharsets.UTF_8));
+		String linea = br.readLine();
+		System.out.println(linea);
+		String fecha = extraerFecha(linea);
+		System.out.println(fecha);
+		
+	}
+	public static String extraerFecha(String x) {
+		String [] split = x.split("-");
+		String fecha = split[0];
+		return fecha;
+	}
+}

@@ -1,0 +1,145 @@
+package app;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+public class prueba {
+	public static void main(String args[]) throws IOException {
+		File archivo = new File("C:\\Users\\NOX\\Desktop\\Progamacion\\Whatsapp\\app\\chat.txt");
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), StandardCharsets.UTF_8));
+		ArrayList <String> mensajes = new ArrayList <String>();
+		mensajes=rellenarArrayString(br);
+		ArrayList <LocalDate> fecha = new ArrayList <LocalDate>();
+		fecha=obtenerFecha(mensajes);
+		ArrayList <Time> horas = new ArrayList <Time>();
+		horas=obtenerHora(mensajes);
+		ArrayList <Chat> datos = new ArrayList <Chat>();
+		datos = almacenarDatos(mensajes);
+	}
+	public static ArrayList <String> rellenarArrayString(BufferedReader x) throws IOException{
+		String linea = "";
+		ArrayList <String> mensajes = new ArrayList <String>();
+		
+		while(linea != null) {
+			linea = x.readLine();
+			if(linea != null) {
+				mensajes.add(linea);
+			}
+		}
+		x.close();
+		return mensajes;
+	}
+	public static String extraerFecha(String x) {
+		String [] split = x.split("-");
+		String cadena = split[0];
+		String [] split2 = cadena.split("\\s+");
+		String fecha = split2[0];
+		return fecha;
+	}
+	public static ArrayList <LocalDate> parsearFecha(ArrayList<String> x) {
+		ArrayList <LocalDate> fechaParseada = new ArrayList <LocalDate>();
+		Integer sumaAno = 2000;
+		for(int i=0;i<x.size();i++) {
+			String [] split = x.get(i).split("/");
+			Integer dia = Integer.parseInt(split[0]);
+			Integer mes = Integer.parseInt(split[1]);
+			Integer ano = sumaAno+Integer.parseInt(split[2]);
+			fechaParseada.add(LocalDate.of(ano, mes, dia));
+		}
+		return fechaParseada;
+	}
+	public static ArrayList <LocalDate> obtenerFecha(ArrayList <String> x){
+		ArrayList<String> fechaExtraida = new ArrayList<String>();
+		ArrayList<LocalDate> fechaParseada = new ArrayList<LocalDate>();
+		for(int i=0;i<x.size();i++) {
+			String stringFecha = extraerFecha(x.get(i));
+			fechaExtraida.add(stringFecha);
+		}
+		fechaParseada= parsearFecha(fechaExtraida);
+		return fechaParseada;
+	}
+	public static String extraerHora(String x) {
+		String [] split = x.split("-");
+		String cadena = split[0];
+		String [] split2 = cadena.split("\\s+");
+		String hora = split2[1];
+		return hora;
+	}
+	public static ArrayList <Time> parsearHora(ArrayList <String> x){
+		ArrayList <Time> horaParseada = new ArrayList <Time>();
+		String segundos = ":00";
+		for(int i=0;i<x.size();i++) {
+			String hora = x.get(i);
+			hora = hora+segundos;
+			Time horaParse = Time.valueOf(hora);
+			horaParseada.add(horaParse);
+		}
+		return horaParseada;
+	}
+	public static ArrayList <Time> obtenerHora(ArrayList <String> x){
+		ArrayList <String> horaString = new ArrayList <String>();
+		ArrayList <Time> horas = new ArrayList <Time>();
+		for(int i=0;i<x.size();i++) {
+			String stringHora = extraerHora(x.get(i));
+			horaString.add(stringHora);
+		}
+		horas = parsearHora(horaString);
+		return horas;
+	}
+	public static ArrayList <String> extraerUserName(ArrayList <String> x) {
+		ArrayList <String> usuarios = new ArrayList<String>();
+		for(int i=0;i<x.size();) {
+			String cadena = x.get(i);
+			String [] split = cadena.split("-");
+			String cadena2 = split[1];
+			String [] split2 = cadena2.split(":");
+			String usuario = split2[1];
+			usuario = usuario.trim();
+			usuarios.add(usuario);
+		}
+		return usuarios;
+	}
+	public static ArrayList <String> extraerMensaje(ArrayList <String> x) {
+		ArrayList <String> mensajes = new ArrayList<String>();
+		for(int i=0;i<x.size();) {
+			String cadena = x.get(i);
+			String [] split = cadena.split("-");
+			String cadena2 = split[1];
+			String [] split2 = cadena2.split(":");
+			String mensaje = split2[1];
+			mensaje = mensaje.trim();
+			mensajes.add(mensaje);
+		}
+		return mensajes;
+	}
+	public static ArrayList <Chat> almacenarDatos(ArrayList <String> x){
+		ArrayList <Chat> datos = new ArrayList <Chat>();
+		ArrayList <LocalDate> fechas = new ArrayList <LocalDate>();
+		ArrayList <Time> horas = new ArrayList <Time>();
+		ArrayList <String> users = new ArrayList <String>();
+		ArrayList <String> mensajes = new ArrayList <String>();
+		
+		fechas=obtenerFecha(x);
+		horas=obtenerHora(x);
+		users=extraerUserName(x);
+		mensajes=extraerMensaje(x);
+		
+		for(int i=0;i<x.size();i++) {
+			LocalDate fecha = fechas.get(i);
+			Time hora = horas.get(i);
+			String user = users.get(i);
+			String mensaje = mensajes.get(i);
+			Chat dato= new Chat(fecha,hora,user,mensaje);
+			datos.add(dato);
+		}
+		return datos;
+	}
+}

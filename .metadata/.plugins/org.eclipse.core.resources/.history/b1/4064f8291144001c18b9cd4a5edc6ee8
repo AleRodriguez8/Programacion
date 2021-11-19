@@ -1,0 +1,13 @@
+package app;
+
+public class prueba2 {
+	public static void main(String [] args) {
+		String msj = "1/10/21 13:33 - Ale: Quebplan";
+		String [] split = msj.split("-");
+		String cadena = split[1];
+		String [] split2 = cadena.split(":");
+		String user = split2[0];
+		String mnsj = split2[1];
+		System.out.println(user+mnsj);
+	}
+}

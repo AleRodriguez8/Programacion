@@ -1,0 +1,68 @@
+package app;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+public class prueba {
+	public static void main(String args[]) throws IOException {
+		File archivo = new File("C:\\Users\\NOX\\Desktop\\Progamacion\\Whatsapp\\app\\chat.txt");
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), StandardCharsets.UTF_8));
+		ArrayList <String> mensajes = new ArrayList <String>();
+		mensajes=rellenarArrayString(br);
+		ArrayList <LocalDate> fechaString = new ArrayList <LocalDate>();
+		fechaString=obtenerFecha(mensajes);
+		for(int i=0;i<fechaString.size();i++) {
+			System.out.println(fechaString.get(i));
+		}
+		
+	}
+	public static ArrayList <String> rellenarArrayString(BufferedReader x) throws IOException{
+		String linea = "";
+		ArrayList <String> mensajes = new ArrayList <String>();
+		
+		while(linea != null) {
+			linea = x.readLine();
+			if(linea != null) {
+				mensajes.add(linea);
+			}
+		}
+		x.close();
+		return mensajes;
+	}
+	public static String extraerFecha(String x) {
+		String [] split = x.split("-");
+		String cadena = split[0];
+		String [] split2 = cadena.split("\\s+");
+		String fecha = split2[0];
+		return fecha;
+	}
+	public static ArrayList <LocalDate> parsearFecha(ArrayList<String> x) {
+		ArrayList <LocalDate> fechaParseada = new ArrayList <LocalDate>();
+		Integer sumaAno = 2000;
+		for(int i=0;i<x.size();i++) {
+			String [] split = x.get(i).split("/");
+			Integer dia = Integer.parseInt(split[0]);
+			Integer mes = Integer.parseInt(split[1]);
+			Integer ano = sumaAno+Integer.parseInt(split[2]);
+			fechaParseada.add(LocalDate.of(ano, mes, dia));
+		}
+		return fechaParseada;
+	}
+	public static ArrayList <LocalDate> obtenerFecha(ArrayList <String> x){
+		ArrayList<String> fechaExtraida = new ArrayList<String>();
+		ArrayList<LocalDate> fechaParseada = new ArrayList<LocalDate>();
+		for(int i=0;i<x.size();i++) {
+			String stringFecha = extraerFecha(x.get(i));
+			fechaExtraida.add(stringFecha);
+		}
+		fechaParseada= parsearFecha(fechaExtraida);
+		return fechaParseada;
+	}
+}
